@@ -11,6 +11,10 @@
         p::after {
             transform: translate(-19.3rem);
         }
+
+        /* .hidden {
+            display: none;
+        } */
     </style>
 </head>
 
@@ -21,13 +25,15 @@
     $password = "";
     $db_name = "dunder_miflin";
     $conn = new mysqli($server_name, $user_name, $password, $db_name);
-    $name = $phone = $gender = $address = $dob = $salary = $designation =$id= "";
-    $id = $_GET["id"];
+    $name = $phone = $gender = $address = $dob = $salary = $designation = $id = "";
+    if (isset($_GET["id"])) {
+        $id = $_GET["id"];
+    }
     $display = "select * from employees where employee_id=$id";
 
     $err_name = $err_phone = $err_address = $err_dob = $err_salary = $err_designation = $employee_id = "";
     if (isset($_POST["submit"])) {
-        $employee_id=$_POST["id"];
+        $employee_id = $_POST["id"];
         $temp = $employee_id;
         $name = $_POST["name"];
         $phone = $_POST["phone"];
@@ -35,7 +41,6 @@
         $dob = $_POST["dob"];
         $salary = $_POST["salary"];
         $designation = $_POST["designation"];
-        echo $temp;
         // name validation
         if (strlen($_POST["name"]) < 3) {
             $err_name = "Your name should be atleast 3 characters long";
@@ -88,7 +93,6 @@
             $err_salary = "Your need to enter your salary ";
             $s = 1;
         }
-
         if ($s == 0) {
             $update = "UPDATE employees SET name='$name',address='$address',phone='$phone',date_of_birth='$dob',designation='$designation',salary='$salary' WHERE employee_id='$temp'";
             echo $update;
@@ -129,7 +133,7 @@
                 <input class="psuedo" type="text" name="name" value="<?php echo htmlentities($name); ?>" placeholder="Name"><br>
                 <div class="err"><?php echo "$err_name"; ?></div>
                 <label for="dob" class="hed">Date of Birth </label><br>
-                <input class="psuedo" type="date" name="dob" value="<?php echo htmlentities($dob); ?>" placeholder="Date of Birth"><br>
+                <input class="psuedo" type="date" name="dob" value="  <br>
                 <div class="err"><?php echo $err_dob ?></div>
                 <textarea class="psuedo" name="address" id="txtarea" rows="4" placeholder="Address"><?php echo $address; ?></textarea><br>
                 <div class="err"><?php echo $err_address ?></div>
@@ -144,5 +148,5 @@
         </div>
     </div>
 </body>
-
+ 
 </html>
