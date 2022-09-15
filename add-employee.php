@@ -12,16 +12,8 @@ session_start();
     <link rel="stylesheet" href="css/style3.css">
     <style>
         .home {
-            text-decoration: none;
-            color: white;
-            padding: 0.5rem 1rem;
-            background-color: green;
-            position: absolute;
-            top:10rem;
-            right:15.5rem;
-            border-radius: 5px;
-            box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.438);
-            transition: 0.2s linear;
+            margin-left: 9%;
+
         }
     </style>
 </head>
@@ -114,8 +106,9 @@ session_start();
 
             $_SESSION["phone"] = $phone;
             $conn->close();
-            echo '<script>alert("Employee details has been succesfully added")</script>';
+            
             header("Location:index.php");
+            echo '<script>alert("Employee details has been succesfully added")</script>';
             
         }
     }
@@ -124,9 +117,9 @@ session_start();
     ?>
     
     <div class="head">
-        <div class="container"><a class="home" href="index.php" class="back">Home</a>
+        <div class="container">
             <div class="application_no"><?php echo "Employee no : $employee_id"; ?></div>
-            <div class="heading">Employee Registration Form</div>
+            <div class="headin-contain"><span class="heading">Employee Registration Form</span><a class="home" href="index.php" class="back">Home</a></div>
             <p>Please fill in the form below </p>
             <div class="hr"></div>
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">

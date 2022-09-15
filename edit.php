@@ -1,6 +1,3 @@
-<?php
-session_start();
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,19 +11,6 @@ session_start();
         p::after {
             transform: translate(-19.3rem);
         }
-
-        .home {
-            text-decoration: none;
-            color: white;
-            padding: 0.5rem 1rem;
-            background-color: green;
-            position: absolute;
-            top:10rem;
-            right:16rem;
-            border-radius: 5px;
-            box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.438);
-            transition: 0.2s linear;
-        }
     </style>
 </head>
 
@@ -37,35 +21,21 @@ session_start();
     $password = "";
     $db_name = "dunder_miflin";
     $conn = new mysqli($server_name, $user_name, $password, $db_name);
-    $id = $_SESSION["id"] = 6;
-    $sql = "select * from employees where employee_id=$id";
-    $result = $conn->query($sql);
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $name = $row["name"];
-            $dob = $row["date_of_birth"];
-            $address = $row["address"];
-            $phone = $row["phone"];
-            $designation = $row["designation"];
-            $salary = $row["salary"];
-            // $name=$name_tb;
-            // $dob=$dob_tb;
-            // $address=$address_tb;
-            // $phone=$phone_tb;
-            // $designation=$designation_tb;
-            // $salary=$salary_tb;
-        }
-    }
+    $name = $phone = $gender = $address = $dob = $salary = $designation =$id= "";
+    $id = $_GET["id"];
+    $display = "select * from employees where employee_id=$id";
 
-    $err_name = $err_phone = $err_address = $err_dob = $err_salary = $err_designation = "";
-    $s = 0;
+    $err_name = $err_phone = $err_address = $err_dob = $err_salary = $err_designation = $employee_id = "";
     if (isset($_POST["submit"])) {
+        $employee_id=$_POST["id"];
+        $temp = $employee_id;
         $name = $_POST["name"];
         $phone = $_POST["phone"];
         $address = $_POST["address"];
         $dob = $_POST["dob"];
         $salary = $_POST["salary"];
         $designation = $_POST["designation"];
+        echo $temp;
         // name validation
         if (strlen($_POST["name"]) < 3) {
             $err_name = "Your name should be atleast 3 characters long";
@@ -119,33 +89,43 @@ session_start();
             $s = 1;
         }
 
-        if ($err_address == "" && $err_designation == "" && $err_dob == "" && $err_name == "" && $err_salary == "" && $err_phone == "") {
-            $phone = (int)$phone;
-            $sql = "UPDATE employees SET name='$name',address='$address',phone='$phone',date_of_birth='$dob',designation='$designation',salary='$salary' WHERE employee_id='$id'";
-            if ($conn->query($sql) === TRUE) {
-                $lastid = $conn->insert_id;
-            } else {
-                echo "Error: " . $sql . "<br>" . $conn->error;
-            }
-
-            $_SESSION["phone"] = $phone;
-            $conn->close();
-            $name = $address = $phone = $dob = $designation = $salary = "";
-            // echo '<script>alert("Employee details has been succesfully added")</script>';
-            // header("Location:index.php");
-
+        if ($s == 0) {
+            $update = "UPDATE employees SET name='$name',address='$address',phone='$phone',date_of_birth='$dob',designation='$designation',salary='$salary' WHERE employee_id='$temp'";
+            echo $update;
+            $conn->query($update);
+            header("Location:index.php");
+            echo '<script>alert("Employee details has been succesfully added")</script>';
         }
     }
+    if (!isset($_POST["submit"])) {
+        $result = $conn->query($display);
+        if ($result->num_rows == 1) {
+            while ($row = $result->fetch_assoc()) {
+                $employee_id = $row["employee_id"];
+                $temp = $employee_id;
+                $name = $row["name"];
+                $dob = $row["date_of_birth"];
+                $address = $row["address"];
+                $phone = $row["phone"];
+                $designation = $row["designation"];
+                $salary = $row["salary"];
+            }
+        }
+
+        $s = 0;
+    }
+    $conn->close();
     ?>
-
-
     <div class="head">
-        <div class="container"><div class="contain"><a class="home" href="index.php" class="back">Home</a></div> 
-            <div class="application_no"><?php echo "Employee no : $id"; ?></div>
-            <div class="heading">Employee details</div>
+        <div class="container">
+            <div class="application_no"><?php echo "Employee no : $employee_id"; ?></div>
+            <div class="heading-contain">
+                <div class="heading">Employee details</div><a class="home" href="index.php" class="back">Home</a>
+            </div>
             <p>Edit emoloyee details through the form </p>
             <div class="hr"></div>
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                <input class="hidden" type="text" name="id" value="<?php echo $employee_id; ?>" readonly><br>
                 <input class="psuedo" type="text" name="name" value="<?php echo htmlentities($name); ?>" placeholder="Name"><br>
                 <div class="err"><?php echo "$err_name"; ?></div>
                 <label for="dob" class="hed">Date of Birth </label><br>

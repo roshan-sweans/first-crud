@@ -1,6 +1,3 @@
-<?php
-session_start();
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,8 +5,11 @@ session_start();
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
     <link rel="stylesheet" href="css/style1.css">
+    <title>Document</title>
+    <style>
+        
+    </style>
 </head>
 
 <body>
@@ -18,10 +18,10 @@ session_start();
     $user_name = "root";
     $password = "";
     $db_name = "dunder_miflin";
+    $id = $_GET["id"];
+    $sql_1 = "select * from employees where employee_id=$id";
     $conn = new mysqli($server_name, $user_name, $password, $db_name);
-    $id=$_GET['id'];
-    $sql = "select * from employees where employee_id=$id";
-    $result = $conn->query($sql);
+    $result = $conn->query($sql_1);
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
             $id = $row["employee_id"];
@@ -34,10 +34,16 @@ session_start();
             $salary = $row["salary"];
         }
     }
+    $sql_2 = "DELETE FROM employees WHERE employee_id=$id";
+    $conn->query($sql_2) ;
+    if (isset($_POST["submit"])) {
+        header("Location:index.php");
+    }
+
     ?>
     <div class="master-container">
         <div class="header">
-            <div class="main-heading">More details on the clicked row</div>
+            <div class="main-heading">The following record has been deleted</div>
             <a href="index.php" class="home">Home</a>
         </div>
         <div class="table">
@@ -62,10 +68,8 @@ session_start();
                 <div class="light"><?php echo $salary; ?></div>
             </div>
         </div>
-        
     </div>
-    <?php
-     echo '<div class="btttn"><a href="edit.php?id='.$id.'" class="edit-bttn">Edit</a></div>';?>
+  
 </body>
 
 </html>

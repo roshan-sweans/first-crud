@@ -1,6 +1,3 @@
-<?php
-session_start();
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -32,13 +29,12 @@ session_start();
             </div>
             <?php
             $db_check = "CREATE DATABASE IF NOT EXISTS dunder_miflin";
-            // $id_check = "SHOW TABLE STATUS LIKE 'applicant_details'";
             $tb_check = "CREATE TABLE IF NOT EXISTS employees(employee_id int(6) AUTO_INCREMENT PRIMARY KEY,name varchar(20),date_of_birth date,address varchar(80),phone bigint,designation varchar(25),date_of_joining date,salary bigint);";
             $server_name = "localhost";
             $user_name = "root";
             $password = "";
             $db_name = "dunder_miflin";
-            $conn = new mysqli($server_name, $user_name, $password,);
+            $conn = new mysqli($server_name, $user_name, $password);
             if ($conn->connect_error) {
                 die("Connection failed: " . $conn->connect_error);
             }
@@ -54,20 +50,28 @@ session_start();
             } else {
                 echo "Error: " . $tb_check . "<br>" . $conn->error;
             }
+            $z=0;
             $sql = "SELECT * FROM employees";
             $result = $conn->query($sql);
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     $i=$row["employee_id"];
-                    if ($row['employee_id'] % 2 == 0) {
+                    if ($z % 2 == 0) {
                         echo "<div class='row'><div class='light'>" . $row['employee_id'] . "</div><div class='light'>" . $row['name'] . "</div>";
                         echo "<div class='light'>" . $row['address'] . "</div><div class='light'>" . $row['salary'] . "</div>";
-                        echo '<div class="light"><div class="icons"><i class="fa fa-eye"></i><i class="fa fa-pencil"></i><i class="fa fa-trash"></i></div></div></div>';
+                        echo '<div class="light">
+                        <a href="show.php?id='.$row["employee_id"].'"><i class="fa fa-eye"></i></a>
+                        <a href="edit.php?id='.$row["employee_id"].'"><i class="fa fa-pencil"></i></a>
+                        <a href="delete.php?id='.$row["employee_id"].'"><i class="fa fa-trash"></i></a></div></div>';
                     } else {
                         echo "<div class='row'><div class='dark'>" . $row['employee_id'] . "</div><div class='dark'>" . $row['name'] . "</div>";
                         echo "<div class='dark'>" . $row['address'] . "</div><div class='dark'>" . $row['salary'] . "</div>";
-                        echo '<div class="dark"><div class="icons"><i onclick="show('.$i.')" class="fa fa-eye"></i><i onClick="edit($i)" class="fa fa-pencil"></i><i onClick="delete($i)" class="fa fa-trash"></i></div></div></div>';
+                        echo '<div class="dark">
+                        <a href="show.php?id='.$row["employee_id"].'"><i class="fa fa-eye"></i></a>
+                        <a href="edit.php?id='.$row["employee_id"].'"><i class="fa fa-pencil"></i></a>
+                        <a href="delete.php?id='.$row["employee_id"].'"><i class="fa fa-trash"></i></a></div></div>';
                     }
+                    $z+=1;
                 }
             } else {
                 echo "<div class='no-rows'>The are no data in the table</div>";
